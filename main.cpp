@@ -139,20 +139,18 @@ static int cb(struct nfq_q_handle* qh, struct nfgenmsg* nfmsg,
     int len = nfq_get_payload(nfa, &pkt_data);
 
     struct libnet_ipv4_hdr* ip_header;
-    struct libnet_tcp_hdr* tcp_header;
-
-
-
     ip_header = (struct libnet_ipv4_hdr*)pkt_data;
-    tcp_header = (struct libnet_tcp_hdr*)(pkt_data + sizeof(struct libnet_ipv4_hdr));
-
+    
     // if not TCP, return NF_ACCEPT
     if (ip_header->ip_p != IPPROTO_TCP) {
         return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
     }
 
+    struct libnet_tcp_hdr* tcp_header;
+    tcp_header = (struct libnet_tcp_hdr*)(pkt_data + sizeof(struct libnet_ipv4_hdr));
+
     // if not Http protocal, return NF_ACCEPT
-    if (tcp_header->th_dport != 80) {
+    if (htons(tcp_header)->th_dport != 80) {
         return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
     }
 
