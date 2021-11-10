@@ -158,15 +158,17 @@ static int cb(struct nfq_q_handle* qh, struct nfgenmsg* nfmsg,
     // parse host from http header. host is in form of "Host: test.gilgil.net"
     char * start = (char*)pkt_data + sizeof(struct libnet_ipv4_hdr) + sizeof(struct libnet_tcp_hdr);
     for(int i = 0; i < len - sizeof(struct libnet_ipv4_hdr) - sizeof(struct libnet_tcp_hdr); i++){
-        if(start[i] == '\r' && start[i+1] == '\n' && start[i+2] == 'H' && start[i+3] == 'o' && start[i+4] == 's' && start[i+5] == 't' && start[i+6] == ':'){
-            start += i + 7;
+        if(start[i] == 'H' && start[i+1] == 'o' && start[i+2] == 's' && start[i+3] == 't' && start[i+4] == ':'){
+            start += i + 5;
             break;
         }
     }
     string host = "";
-    while(start[0] != '\r' && start[1] != '\n'){
-        host += start[0];
-        start++;
+    for(int i = 0; i < 10000; i++){
+        if(start[i] == '\r'){
+            break;
+        }
+        host += start[i];
     }
 
     cout << "\n\n HOST \n" << host << endl;
