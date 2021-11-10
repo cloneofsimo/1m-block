@@ -172,16 +172,9 @@ static int cb(struct nfq_q_handle* qh, struct nfgenmsg* nfmsg,
         host += start[idx + i];
     }
 
-    for(int i = 0; i < 10; i++)
-        cout << start[idx + i] << endl;
-
-    cout << "\n\n HOST \n" << host << endl;
-
     if (isin(host) == false) {
         return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
     }
-
-    // if the host is in the list, return NF_DROP
 
     return nfq_set_verdict(qh, id, NF_DROP, 0, NULL);
 }
