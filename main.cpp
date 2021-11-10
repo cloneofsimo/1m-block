@@ -156,20 +156,24 @@ static int cb(struct nfq_q_handle* qh, struct nfgenmsg* nfmsg,
 
     // if the host is not test.gilgil.net, return NF_ACCEPT
     // parse host from http header. host is in form of "Host: test.gilgil.net"
-    char * start = (char*)pkt_data + sizeof(struct libnet_ipv4_hdr) + sizeof(struct libnet_tcp_hdr);
-    for(int i = 0; i < len - sizeof(struct libnet_ipv4_hdr) - sizeof(struct libnet_tcp_hdr); i++){
+    char * start = (char*)pkt_data + sizeof( libnet_ipv4_hdr) + sizeof( libnet_tcp_hdr);
+    int idx = 0;
+    for(int i = 0; i < len - sizeof( libnet_ipv4_hdr) - sizeof( libnet_tcp_hdr); i++){
         if(start[i] == 'H' && start[i+1] == 'o' && start[i+2] == 's' && start[i+3] == 't' && start[i+4] == ':'){
-            start += i + 5;
+            idx = i + 6;
             break;
         }
     }
     string host = "";
     for(int i = 0; i < 10000; i++){
-        if(start[i] == '\r'){
+        if(start[idx + i] == '\r' || start[idx + i] == '\n'){
             break;
         }
-        host += start[i];
+        host += start[idx + i];
     }
+
+    for(int i = 0; i < 10; i++)
+        cout << start[idx + i] << endl;
 
     cout << "\n\n HOST \n" << host << endl;
 
