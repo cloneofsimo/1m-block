@@ -150,7 +150,7 @@ static int cb(struct nfq_q_handle* qh, struct nfgenmsg* nfmsg,
     tcp_header = (struct libnet_tcp_hdr*)(pkt_data + sizeof(struct libnet_ipv4_hdr));
 
     // if not Http protocal, return NF_ACCEPT
-    if (htons(tcp_header)->th_dport != 80) {
+    if (htons(tcp_header->th_dport) != 80) {
         return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
     }
 
