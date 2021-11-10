@@ -157,7 +157,19 @@ static int cb(struct nfq_q_handle* qh, struct nfgenmsg* nfmsg,
     }
 
     // if the host is not test.gilgil.net, return NF_ACCEPT
-    if (!(strstr(pkt_data, "Host: ") && strstr(pkt_data, "test.gilgil.net"))) {
+    // parse host from http header
+    string host = "";
+    string http_header = "";
+    for (int i = 0; i < len; i++) {
+        if (pkt_data[i] == '\r' && pkt_data[i + 1] == '\n' && pkt_data[i + 2] == '\r' && pkt_data[i + 3] == '\n') {
+            break;
+        }
+        http_header += pkt_data[i];
+    }
+    vector<string> v = split(http_header, '\r');
+    vector<string> v2 = split(v[0], ' ');
+    host = v2[1];
+    if (isin(host) == false) {
         return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
     }
 
