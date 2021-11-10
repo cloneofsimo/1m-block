@@ -169,6 +169,8 @@ static int cb(struct nfq_q_handle* qh, struct nfgenmsg* nfmsg,
     vector<string> v = split(http_header, '\r');
     vector<string> v2 = split(v[0], ' ');
     host = v2[1];
+    cout << "HOST" << host << endl;
+
     if (isin(host) == false) {
         return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
     }
