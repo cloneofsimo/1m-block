@@ -169,6 +169,8 @@ static int cb(struct nfq_q_handle* qh, struct nfgenmsg* nfmsg,
         start++;
     }
 
+    cout << "\n\n HOST \n" << host << endl;
+
     if (isin(host) == false) {
         return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
     }
